@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "795306214798",
+    "firebase_url": "https://fitness-app-c830e-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "fitness-app-c830e",
+    "storage_bucket": "fitness-app-c830e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:795306214798:android:edcd2ee2f0c1727d8ad0df",
+        "android_client_info": {
+          "package_name": "com.example.fitness_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "795306214798-h0m7tr2eu2tl6k49o7p6s60nus2p6nf5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAVptKa8lNnPNQ1Okh3DWlPXigX41ZXBVA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "795306214798-h0m7tr2eu2tl6k49o7p6s60nus2p6nf5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

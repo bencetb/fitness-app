@@ -1,0 +1,125 @@
+{
+    "Practitioners": {
+        "RohM9zHCMIaL7fEqKzYyOm0UFMj2": {
+            "id": "RohM9zHCMIaL7fEqKzYyOm0UFMj2",
+            "nameFamily": "Teszt",
+            "nameText": "Dr. Teszt Orvos",
+            "nameGiven": "Orvos",
+            "data": {
+                "meta": {
+                    "lastUpdated": "2021-10-20T13:08:00.000Z"
+                },
+                "id": "RohM9zHCMIaL7fEqKzYyOm0UFMj2",
+                "address": {
+                    "city": "Szeged",
+                    "country": "Magyarország",
+                    "postalCode": "6720",
+                    "line": "Somogyi utca 19.",
+                    "use": "use"
+                },
+                "gender": "MALE",
+                "identifier": {
+                    "value": "12345/5"
+                },
+                "qualification": [
+                    {
+                        "identifier": [
+                            {
+                                "value": "31423/2"
+                            }
+                        ],
+                        "issuer": {
+                            "reference": "414242424"
+                        }
+                    }
+                ],
+                "telecom": [
+                    {
+                        "system": "EMAIL",
+                        "value": "testuser@mintakorhaz.com",
+                        "rank": 1
+                    },
+                    {
+                        "system": "PHONE",
+                        "rank": 2,
+                        "value": "06201234567"
+                    }
+                ],
+                "active": "true",
+                "name": [
+                    {
+                        "use": "official",
+                        "family": "Teszt",
+                        "given": [
+                            "Orvos"
+                        ],
+                        "prefix": [
+                            "Dr."
+                        ],
+                        "suffix": [
+                            ""
+                        ],
+                        "text": "Dr. Teszt Orvos "
+                    }
+                ]
+            },
+            "addressCountry": "Magyarország",
+            "addressPostalCode": 6720,
+            "organization": "414242424",
+            "nameSearchField": [
+                "d",
+                "dr",
+                "dr.",
+                "t",
+                "te",
+                "tes",
+                "tesz",
+                "teszt",
+                "o",
+                "or",
+                "orv",
+                "orvo",
+                "orvos",
+                "dr. ",
+                "dr. t",
+                "dr. te",
+                "dr. tes",
+                "dr. tesz",
+                "dr. teszt",
+                "dr. teszt ",
+                "dr. teszt o",
+                "dr. teszt or",
+                "dr. teszt orv",
+                "dr. teszt orvo",
+                "dr. teszt orvos",
+                "dr. teszt orvos ",
+                "teszt ",
+                "teszt o",
+                "teszt or",
+                "teszt orv",
+                "teszt orvo",
+                "teszt orvos",
+                "teszt orvos ",
+                "orvos "
+            ],
+            "namePrefix": "Dr.",
+            "addressLine": "Somogyi utca 19.",
+            "qualificationSearchField": [
+                "3",
+                "31",
+                "314",
+                "3142",
+                "31423",
+                "31423/",
+                "31423/2"
+            ],
+            "identifier": null,
+            "nameSuffix": "",
+            "addressCity": "Szeged",
+            "telecom": [
+                "testuser@mintakorhaz.com",
+                "06201234567"
+            ]
+        }
+    }
+}
