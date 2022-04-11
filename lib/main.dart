@@ -1,5 +1,7 @@
+import 'package:fitness_app/screens/main_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'screens/add_food.dart';
 import 'screens/homepage.dart';
@@ -26,7 +28,9 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(fontFamily: GoogleFonts.lato().fontFamily),
       routes: {
+        '/main_controller': (context) => MainController(),
         '/home': (context) => Homepage(),
         '/add_food': (context) => AddFood(),
         '/diary': (context) => Diary(),

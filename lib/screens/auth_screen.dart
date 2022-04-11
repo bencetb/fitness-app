@@ -14,7 +14,7 @@ class _AuthScreenState extends State<AuthScreen> {
   void checkAuth() async {
     final result = FirebaseAuth.instance.currentUser;
     if (result != null) {
-      Navigator.of(context).pushReplacementNamed('/home');
+      Navigator.of(context).pushReplacementNamed('/main_controller');
     }
   }
 

@@ -4,8 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-import '../widgets/drawer.dart';
-
 class Myinfo extends StatefulWidget {
   @override
   State<Myinfo> createState() => _MyinfoState();
@@ -49,6 +47,7 @@ class _MyinfoState extends State<Myinfo> {
       String activityLevel, String goal) async {
     int age = calculateAge(dob);
     int g = gender == "male" ? 5 : -161;
+    double gm = gender == "male" ? 0.85 : 0.9;
     int dailyCalorieIntake = 0;
     int protein = 0;
     int carbs = 0;
@@ -56,7 +55,7 @@ class _MyinfoState extends State<Myinfo> {
     if (goal == "-") {
       dailyCalorieIntake = (((10 * weight + 6.25 * height - 5 * age + g) *
                   double.parse(activityLevel)) *
-              0.85)
+              gm)
           .round();
       protein = ((dailyCalorieIntake * 0.4) / 4).round();
       carbs = ((dailyCalorieIntake * 0.4) / 4).round();
@@ -111,13 +110,6 @@ class _MyinfoState extends State<Myinfo> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Adataim'),
-        centerTitle: true,
-      ),
-      drawer: const Drawer(
-        child: BuildDrawer(),
-      ),
       body: isLoading
           ? Center(
               child: CircularProgressIndicator(),

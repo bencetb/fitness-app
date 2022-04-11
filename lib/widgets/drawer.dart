@@ -49,44 +49,16 @@ class _BuildDrawerState extends State<BuildDrawer> {
       return Container(
         height: MediaQuery.of(context).size.height,
         child: ListView(
-          padding: EdgeInsets.zero,
           children: [
             DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue,
-              ),
+              decoration: BoxDecoration(color: Colors.blue),
               child: Text(
-                'Fitness alkalmazás\n\n\n\nBejelentkezve: ' + loggedInUsername,
-                style: TextStyle(color: Colors.white, fontSize: 23),
+                'Bejelentkezve: ' + loggedInUsername,
+                style: TextStyle(fontSize: 23, color: Colors.white),
               ),
-            ),
-            ListTile(
-              title: Text(
-                'Kezdőlap',
-                style: drawerText,
-              ),
-              onTap: () => Navigator.of(context).pushReplacementNamed('/home'),
-            ),
-            ListTile(
-              title: Text('Naplóm', style: drawerText),
-              onTap: () => Navigator.of(context).pushReplacementNamed('/diary'),
-            ),
-            ListTile(
-              title: Text('Receptjeim', style: drawerText),
-              onTap: () =>
-                  Navigator.of(context).pushReplacementNamed('/recipes'),
-            ),
-            ListTile(
-              title: Text('Adataim', style: drawerText),
-              onTap: () =>
-                  Navigator.of(context).pushReplacementNamed('/myinfo'),
             ),
             ListTile(
               title: Text('Kijelentkezés', style: drawerText),
-              contentPadding: EdgeInsets.only(
-                  top: MediaQuery.of(context).size.height -
-                      MediaQuery.of(context).size.height * 0.67,
-                  left: 18),
               onTap: () => {
                 logOut(),
               },

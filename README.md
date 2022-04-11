@@ -1,4 +1,4 @@
-# fitness_app
+# Kalóriaszámláló fitness alkalmazás
 
 A new Flutter project.
 

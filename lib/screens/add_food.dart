@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:searchfield/searchfield.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
-import '../model/food.dart';
+import 'package:uuid/uuid.dart';
 
 class AddFood extends StatefulWidget {
   @override
@@ -16,17 +15,11 @@ class _State extends State<AddFood> {
   final fatController = TextEditingController();
   final searchController = TextEditingController();
 
-  final List<Food> foodList = [
-    Food.named(5, 20, 4, 'Kenyér'),
-    Food.named(24, 4, 2, 'Csirkemell'),
-    Food.named(5, 12, 3, 'Vörösbab'),
-    Food.named(20, 4, 8, 'Marhahús'),
-  ];
-
+  final List<String> foodList = [];
   List<String> get foodListItems {
     List<String> list = [];
     foodList.forEach((item) {
-      list.add(item.name);
+      list.add(item);
     });
     return list;
   }
@@ -35,9 +28,14 @@ class _State extends State<AddFood> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Étkezés hozzáadása'),
-        centerTitle: true,
-      ),
+          title: const Text('Étkezés hozzáadása'),
+          centerTitle: true,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.popAndPushNamed(context, "/home");
+            },
+          )),
       body: Card(
         elevation: 5,
         child: Container(
@@ -54,34 +52,23 @@ class _State extends State<AddFood> {
                     border: OutlineInputBorder(),
                     hintText: 'Keresés',
                   ),
-                  onTap: (x) {
-                    foodList.forEach((item) {
-                      if (item.name == x) {
-                        proteinController.text = item.protein.toString();
-                        carbsController.text = item.carbs.toString();
-                        fatController.text = item.fat.toString();
-                      }
-                    });
-                  },
+                  onTap: (x) {},
                 ),
               ),
               TextField(
                 decoration: InputDecoration(labelText: 'Fehérje'),
                 controller: proteinController,
                 keyboardType: TextInputType.numberWithOptions(decimal: true),
-                //onSubmitted: () {},
               ),
               TextField(
                 decoration: InputDecoration(labelText: 'Széndhidrát'),
                 controller: carbsController,
                 keyboardType: TextInputType.numberWithOptions(decimal: true),
-                //onSubmitted: (_) => submitData(),
               ),
               TextField(
                 decoration: InputDecoration(labelText: 'Zsír'),
                 controller: fatController,
                 keyboardType: TextInputType.numberWithOptions(decimal: true),
-                //onSubmitted: (_) => submitData(),
               ),
               Container(
                 padding: EdgeInsets.only(top: 15),
@@ -91,7 +78,7 @@ class _State extends State<AddFood> {
                         double.parse(proteinController.text).round(),
                         double.parse(carbsController.text).round(),
                         double.parse(fatController.text).round());
-                    Navigator.pop(context);
+                    Navigator.popAndPushNamed(context, "/home");
                   },
                   child: Text('Hozzáadás'),
                 ),
@@ -117,14 +104,23 @@ class _State extends State<AddFood> {
       if (doc.exists == false) {
         await coll.doc(docId).set({});
         await coll.doc(docId).update({
-          "meal": <String, int>{"protein": protein, "carbs": carbs, "fat": fat}
+          Uuid().v1(): <String, int>{
+            "protein": protein,
+            "carbs": carbs,
+            "fat": fat
+          }
         });
       } else {
         await coll.doc(docId).update({
-          "meal": <String, int>{"protein": protein, "carbs": carbs, "fat": fat}
+          Uuid().v1(): <String, int>{
+            "protein": protein,
+            "carbs": carbs,
+            "fat": fat
+          }
         });
       }
     } catch (e) {
+      print("ERROR: " + e.toString());
       return;
     }
   }

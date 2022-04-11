@@ -11,13 +11,16 @@ class RegisterInfo extends StatefulWidget {
 }
 
 class _RegisterInfoState extends State<RegisterInfo> {
-  bool _value = false;
   int val = 1;
   String selectedValue = "1.2";
   String selectedValue2 = "=";
   String gender = "male";
   String activityLevel = "1.2";
   String goal = "=";
+  int dailyCalorieIntake = 0;
+  int protein = 0;
+  int carbs = 0;
+  int fat = 0;
 
   final nameController = TextEditingController();
   final heightController = TextEditingController();
@@ -28,6 +31,30 @@ class _RegisterInfoState extends State<RegisterInfo> {
       int height, double weight, String activityLevel, String goal) async {
     int age = calculateAge(dob);
     int g = gender == "male" ? 5 : -161;
+    if (goal == "-") {
+      dailyCalorieIntake = (((10 * weight + 6.25 * height - 5 * age + g) *
+                  double.parse(activityLevel)) *
+              0.85)
+          .round();
+      protein = ((dailyCalorieIntake * 0.4) / 4).round();
+      carbs = ((dailyCalorieIntake * 0.4) / 4).round();
+      fat = ((dailyCalorieIntake * 0.2) / 9).round();
+    } else if (goal == "+") {
+      dailyCalorieIntake = (((10 * weight + 6.25 * height - 5 * age + g) *
+                  double.parse(activityLevel)) +
+              500)
+          .round();
+      protein = ((dailyCalorieIntake * 0.3) / 4).round();
+      carbs = ((dailyCalorieIntake * 0.4) / 4).round();
+      fat = ((dailyCalorieIntake * 0.3) / 9).round();
+    } else {
+      dailyCalorieIntake = ((10 * weight + 6.25 * height - 5 * age + g) *
+              double.parse(activityLevel))
+          .round();
+      protein = ((dailyCalorieIntake * 0.3) / 4).round();
+      carbs = ((dailyCalorieIntake * 0.4) / 4).round();
+      fat = ((dailyCalorieIntake * 0.3) / 9).round();
+    }
     await FirebaseFirestore.instance
         .collection("users")
         .doc(FirebaseAuth.instance.currentUser?.uid)
@@ -40,14 +67,10 @@ class _RegisterInfoState extends State<RegisterInfo> {
       "age": age,
       "activityLevel": activityLevel,
       "goal": goal,
-      if (goal == "-")
-        "dailyCalorieIntake": ((10 * weight + 6.25 * height - 5 * age + g) *
-                double.parse(activityLevel)) *
-            0.85
-      else if (goal == "+")
-        "dailyCalorieIntake": ((10 * weight + 6.25 * height - 5 * age + g) *
-                double.parse(activityLevel)) +
-            500
+      "dailyCalorieIntake": dailyCalorieIntake,
+      "protein": protein,
+      "carbs": carbs,
+      "fat": fat
     });
   }
 
