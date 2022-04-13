@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class Myinfo extends StatefulWidget {
   @override
@@ -10,12 +11,12 @@ class Myinfo extends StatefulWidget {
 }
 
 class _MyinfoState extends State<Myinfo> {
-  String activityLevel = "1.2";
-  String goal = "+";
-  String dob = "";
+  String activityLevel = '1.2';
+  String goal = '+';
+  String dob = '';
   int height = 0;
   double weight = 0;
-  String gender = "";
+  String gender = '';
 
   late TextEditingController heightController;
   late TextEditingController weightController;
@@ -25,17 +26,17 @@ class _MyinfoState extends State<Myinfo> {
 
   Future<void> getUserDetails() async {
     final result = await FirebaseFirestore.instance
-        .collection("users")
+        .collection('users')
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .get();
     var data = result.data();
     setState(() {
-      activityLevel = data?["activityLevel"];
-      goal = data?["goal"];
-      dob = data?["dateOfBirth"];
-      height = data?["height"] as int;
-      weight = data?["weight"] as double;
-      gender = data?["gender"];
+      activityLevel = data?['activityLevel'];
+      goal = data?['goal'];
+      dob = data?['dateOfBirth'];
+      height = data?['height'] as int;
+      weight = data?['weight'] as double;
+      gender = data?['gender'];
       heightController = TextEditingController(text: height.toString());
       weightController = TextEditingController(text: weight.toString());
       dobController = TextEditingController(text: dob);
@@ -46,13 +47,13 @@ class _MyinfoState extends State<Myinfo> {
   Future<void> saveUserDetails(String dob, int height, double weight,
       String activityLevel, String goal) async {
     int age = calculateAge(dob);
-    int g = gender == "male" ? 5 : -161;
-    double gm = gender == "male" ? 0.85 : 0.9;
+    int g = gender == 'male' ? 5 : -161;
+    double gm = gender == 'male' ? 0.85 : 0.9;
     int dailyCalorieIntake = 0;
     int protein = 0;
     int carbs = 0;
     int fat = 0;
-    if (goal == "-") {
+    if (goal == '-') {
       dailyCalorieIntake = (((10 * weight + 6.25 * height - 5 * age + g) *
                   double.parse(activityLevel)) *
               gm)
@@ -60,7 +61,7 @@ class _MyinfoState extends State<Myinfo> {
       protein = ((dailyCalorieIntake * 0.4) / 4).round();
       carbs = ((dailyCalorieIntake * 0.4) / 4).round();
       fat = ((dailyCalorieIntake * 0.2) / 9).round();
-    } else if (goal == "+") {
+    } else if (goal == '+') {
       dailyCalorieIntake = (((10 * weight + 6.25 * height - 5 * age + g) *
                   double.parse(activityLevel)) +
               500)
@@ -78,32 +79,31 @@ class _MyinfoState extends State<Myinfo> {
     }
     try {
       await FirebaseFirestore.instance
-          .collection("users")
+          .collection('users')
           .doc(FirebaseAuth.instance.currentUser?.uid)
           .update({
-        "height": height,
-        "weight": weight,
-        "dateOfBirth": dob,
-        "age": age,
-        "activityLevel": activityLevel,
-        "goal": goal,
-        "dailyCalorieIntake": dailyCalorieIntake,
-        "protein": protein,
-        "carbs": carbs,
-        "fat": fat
+        'height': height,
+        'weight': weight,
+        'dateOfBirth': dob,
+        'age': age,
+        'activityLevel': activityLevel,
+        'goal': goal,
+        'dailyCalorieIntake': dailyCalorieIntake,
+        'protein': protein,
+        'carbs': carbs,
+        'fat': fat
       });
     } catch (e) {
       return;
     }
     Fluttertoast.showToast(
-        msg: "Adatok sikeresen módosítva",
+        msg: 'infoModified'.tr(),
         backgroundColor: Color.fromARGB(255, 95, 95, 95));
   }
 
   @override
   void initState() {
     getUserDetails();
-    // TODO: implement initState
     super.initState();
   }
 
@@ -125,20 +125,20 @@ class _MyinfoState extends State<Myinfo> {
                       height: 10,
                     ),
                     TextFormField(
-                      decoration: InputDecoration(
-                          labelText: 'Születési dátum (éééé-HH-nn)'),
+                      decoration:
+                          InputDecoration(labelText: 'dateOfBirth'.tr()),
                       controller: dobController,
                       keyboardType: TextInputType.datetime,
                       maxLength: 10,
                       maxLengthEnforcement: MaxLengthEnforcement.enforced,
                     ),
                     TextFormField(
-                      decoration: InputDecoration(labelText: 'Magasság (cm)'),
+                      decoration: InputDecoration(labelText: 'height'.tr()),
                       controller: heightController,
                       keyboardType: TextInputType.numberWithOptions(),
                     ),
                     TextFormField(
-                      decoration: InputDecoration(labelText: 'Testsúly (kg)'),
+                      decoration: InputDecoration(labelText: 'weight'.tr()),
                       controller: weightController,
                       keyboardType:
                           TextInputType.numberWithOptions(decimal: true),
@@ -146,7 +146,7 @@ class _MyinfoState extends State<Myinfo> {
                     Padding(
                       padding: const EdgeInsets.only(top: 10),
                       child: Text(
-                        "Aktivitási szint",
+                        'activityLevel'.tr(),
                         style: TextStyle(fontSize: 16),
                       ),
                     ),
@@ -154,25 +154,15 @@ class _MyinfoState extends State<Myinfo> {
                         value: activityLevel,
                         items: [
                           DropdownMenuItem(
-                              child: Text(
-                                  "Alacsony (kevés, vagy semennyi testmozgás)"),
-                              value: "1.2"),
+                              child: Text('activ1'.tr()), value: '1.2'),
                           DropdownMenuItem(
-                              child: Text(
-                                  "Könnyű testmozgás/sport 1-3 nap hetente"),
-                              value: "1.375"),
+                              child: Text('activ2'.tr()), value: '1.375'),
                           DropdownMenuItem(
-                              child: Text(
-                                  "Közepes testmozgás/sport 3-5 nap hetente"),
-                              value: "1.55"),
+                              child: Text('activ3'.tr()), value: '1.55'),
                           DropdownMenuItem(
-                              child: Text(
-                                  "Nehéz testmozgás/sport 6-7 nap hetente"),
-                              value: "1.725"),
+                              child: Text('activ4'.tr()), value: '1.725'),
                           DropdownMenuItem(
-                              child: Text(
-                                  "Extrém testmozgás/sport 6-7 nap hetente"),
-                              value: "1.9")
+                              child: Text('activ5'.tr()), value: '1.9')
                         ],
                         onChanged: (String? newValue) {
                           setState(() {
@@ -182,7 +172,7 @@ class _MyinfoState extends State<Myinfo> {
                     Padding(
                       padding: const EdgeInsets.only(top: 10),
                       child: Text(
-                        "Cél",
+                        'goal'.tr(),
                         style: TextStyle(fontSize: 16),
                       ),
                     ),
@@ -190,11 +180,11 @@ class _MyinfoState extends State<Myinfo> {
                         value: goal,
                         items: [
                           DropdownMenuItem(
-                              child: Text("Jelenlegi testsúly megtartása"),
-                              value: "="),
-                          DropdownMenuItem(child: Text("Fogyás"), value: "-"),
+                              child: Text('maintainWeight'.tr()), value: '='),
                           DropdownMenuItem(
-                              child: Text("Tömegnövelés"), value: "+"),
+                              child: Text('loseWeight'.tr()), value: '-'),
+                          DropdownMenuItem(
+                              child: Text('gainWeight'.tr()), value: '+'),
                         ],
                         onChanged: (String? newValue) {
                           setState(() {
@@ -212,7 +202,7 @@ class _MyinfoState extends State<Myinfo> {
                               activityLevel,
                               goal);
                         },
-                        child: Text('Adatok módosítása'),
+                        child: Text('save'.tr()),
                       ),
                     )
                   ],

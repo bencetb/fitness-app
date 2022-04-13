@@ -3,6 +3,7 @@ import 'package:searchfield/searchfield.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:uuid/uuid.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class AddFood extends StatefulWidget {
   @override
@@ -28,12 +29,12 @@ class _State extends State<AddFood> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: const Text('Étkezés hozzáadása'),
+          title: Text('addFood'.tr()),
           centerTitle: true,
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
             onPressed: () {
-              Navigator.popAndPushNamed(context, "/home");
+              Navigator.popAndPushNamed(context, "/main_controller");
             },
           )),
       body: Card(
@@ -48,25 +49,25 @@ class _State extends State<AddFood> {
                   controller: searchController,
                   suggestions: foodListItems,
                   //suggestionAction: SuggestionAction.unfocus,
-                  searchInputDecoration: const InputDecoration(
+                  searchInputDecoration: InputDecoration(
                     border: OutlineInputBorder(),
-                    hintText: 'Keresés',
+                    hintText: 'search'.tr(),
                   ),
                   onTap: (x) {},
                 ),
               ),
               TextField(
-                decoration: InputDecoration(labelText: 'Fehérje'),
+                decoration: InputDecoration(labelText: 'protein'.tr()),
                 controller: proteinController,
                 keyboardType: TextInputType.numberWithOptions(decimal: true),
               ),
               TextField(
-                decoration: InputDecoration(labelText: 'Széndhidrát'),
+                decoration: InputDecoration(labelText: 'carbs'.tr()),
                 controller: carbsController,
                 keyboardType: TextInputType.numberWithOptions(decimal: true),
               ),
               TextField(
-                decoration: InputDecoration(labelText: 'Zsír'),
+                decoration: InputDecoration(labelText: 'fat'.tr()),
                 controller: fatController,
                 keyboardType: TextInputType.numberWithOptions(decimal: true),
               ),
@@ -78,9 +79,9 @@ class _State extends State<AddFood> {
                         double.parse(proteinController.text).round(),
                         double.parse(carbsController.text).round(),
                         double.parse(fatController.text).round());
-                    Navigator.popAndPushNamed(context, "/home");
+                    Navigator.popAndPushNamed(context, "/main_controller");
                   },
-                  child: Text('Hozzáadás'),
+                  child: Text('add'.tr()),
                 ),
               )
             ],

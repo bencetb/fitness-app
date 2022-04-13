@@ -213,7 +213,8 @@ class _RegisterInfoState extends State<RegisterInfo> {
                         double.parse(weightController.text),
                         activityLevel,
                         goal);
-                    Navigator.of(context).pushReplacementNamed('/home');
+                    Navigator.of(context)
+                        .pushReplacementNamed('/main_controller');
                   },
                   child: Text('Mentés'),
                 ),

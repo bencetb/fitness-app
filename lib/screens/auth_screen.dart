@@ -101,7 +101,7 @@ class _AuthCardState extends State<AuthCard> {
         }
         return;
       }
-      Navigator.of(context).popAndPushNamed('/home');
+      Navigator.of(context).popAndPushNamed('/main_controller');
     } else {
       try {
         await _firebaseAuth.createUserWithEmailAndPassword(

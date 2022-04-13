@@ -1,12 +1,12 @@
 {
   "type": "service_account",
-  "project_id": "fitness-app-c830e",
-  "private_key_id": "b0eae80732e629619f671a4cd2b885137c8b347b",
-  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCNVUEpGSLkby0F\nvZUMPp9yhYcOTgFh1cU3/embXr1FqmCc6ghTemlz25kr4RVlsgrTRJUOKS5x7jfs\n0rTaztENgahF14/+KXUZh9Jeprx21S/VyKxYjbdq7ja1PR+cFycm1gBTDdmumbwi\n1x1Bg8aeW3N/ZQrv7C9Ng3IBC1+qbIb+DAvQ09udWa6BLMEs29WyOVbK73b/AEL3\nYM1Vp1MCCIkvMmFEzDdkxRd348eReM3kknHPqIIA6cqNneDM2psaYKnKQX/PwszC\nsqBrHBKHibAcR0kcEvrYFvy7JnB3zIcrH6gJgXzywr9jRaKi6ZiTncw0f0Vp2e+J\nBHyIcn2PAgMBAAECggEANQgLZi9vX0W0IBZN6gVJcQBXd++fJyW+Vc8pq8n1vUE7\n9UT/kMs67GU26TcQ/1K6KyHtyB19tvRK+crqX7wAx0+iY2qKNjU6IjVLo4Zu6yv9\nQfuFZ8jtTOtLjd/8j2ZEo5bjEkb9Kj23UV9kM+QNT/hCs0envfTinvQ2f9vTrq9x\nhhwJU2lyXn1yDdGJvOAP58L/LzZyXXjsAG1wNVxjAMwNvLO1dfF3oWoPVnqlLnhR\nIr+QkDZuSLE12KDUqCWWUBsBXtts4Qepg7UWWAE7wfDXZhUmuIqXPLmTzvKWvrY/\n0mk0YhZj8EkRZHWzvfuerzu99cjBSPaKD5EUrld7AQKBgQDBx3oCv2bOeIOYd0tL\nGpjXSTcQBnSbU7+eHyNrXaa40zAK5P8plO1v/uKYzLw0ATfiXchukUVjyQ9VYRgW\nRLHas9wEk6m/t7p3zo0WD7tZQcazjogxACrD4aPbGW0RmqMyGipT6yElVq1vmrN7\nNPoMbmPEiohk5oS3bCuVAcnhgQKBgQC6tryD77LtefPylrc12zF3EUro5UFjG6Om\nxwGRnm0C8KdkiYrMPEEJLpaghG2sLsQoEnz7yCWb1pBXUZ4woERViAk55Q+zY3hv\nUbVRFr89zewdONg6CheAKiuLZSHHXrJw4tnLouw8WTUTreNnh21EDjcnmOeitb3P\ntODFotPHDwKBgC3rQSRpiskekcCNdFAly1YoyV2IyhUMsXmc013b4Wgm01mhjj2i\nRumlMrkWuvpv13hS1O4uiozs1i9bRMPyH1s+B8Ml4rHFrfA6CADUVYb/KUDfY7KI\n4ZltXNDMo6XqSQXUYXdlXoNkmNC7jhCCK0bK2eV3Fn8iiQyWG3XB6L8BAoGAOZ7l\nRI43mMP2/dl3Rt6TQFyM0pzVdgF0mqZ1nHvYxnyAHC26MNczduLyxyy3L9jq3jb+\nbTFSMeqgduIQQI9lJ0QpHL3M/55l72y22QR9FlSzVj1RtW+h2wKol4cpSn618NKB\nRi/MWb9p+t3B/RQ1Kzh72vN8IKGXpz750uQyGQ8CgYBom0ECDVokfRntZ6EkckSD\nsW8hhE/rsvPbnlvm2Q2VAqJ0nX40pNueAhFTD/EL2zOKOA51VcNdJscdtTA526nU\nadX7H2iJrqJ1Qssw0vkSwgWfQP0dDM34/ZeR0K6+tmskbTrIve19raYGtt9qkCYW\npCC5pigEggN9SPS3wv4yTg==\n-----END PRIVATE KEY-----\n",
-  "client_email": "firebase-adminsdk-35jdr@fitness-app-c830e.iam.gserviceaccount.com",
-  "client_id": "112469475016110371269",
-  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-  "token_uri": "https://oauth2.googleapis.com/token",
-  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-35jdr%40fitness-app-c830e.iam.gserviceaccount.com"
+  "project_id": "",
+  "private_key_id": "",
+  "private_key": "",
+  "client_email": "",
+  "client_id": "",
+  "auth_uri": "",
+  "token_uri": "",
+  "auth_provider_x509_cert_url": "",
+  "client_x509_cert_url": ""
 }
