@@ -1,6 +1,6 @@
 {
 	"addFood": "Étkezés hozzáadása",
-	"search": "Keresés",
+	"search": "Keresés ételre",
 	"protein": "Fehérje",
 	"carbs": "Szénhidrát",
 	"fat": "Zsír",
@@ -16,6 +16,7 @@
 	"home": "Kezdőlap",
 	"diary": "Napló",
 	"recipes": "Receptjeim",
+	"recipes2": "Recept kiválasztása",
 	"myinfo": "Adataim",
 	"infoModified": "Adatok sikeresen módosítva",
 	"dateOfBirth": "Születési dátum (éééé-HH-nn)",
@@ -30,5 +31,12 @@
 	"maintainWeight": "Jelenlegi testsúly megtartása",
 	"loseWeight": "Fogyás",
 	"gainWeight": "Tömegnövelés",
-	"save": "Adatok mentése"
+	"save": "Adatok mentése",
+	"Breakfast": "Reggeli",
+	"Lunch": "Ebéd",
+	"Dinner": "Vacsora",
+	"Snack": "Uzsonna",
+	"dateError": "Helytelen dátum",
+	"chooseFood": "Étel kiválasztása",
+	"foodName": "Étel neve (opcionális)"
 }

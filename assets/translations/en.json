@@ -1,6 +1,6 @@
 {
 	"addFood": "Add meal",
-	"search": "Search",
+	"search": "Search for food",
 	"protein": "Protein",
 	"carbs": "Carbs",
 	"fat": "Fat",
@@ -16,6 +16,7 @@
 	"home": "Home",
 	"diary": "Diary",
 	"recipes": "Recipes",
+	"recipes2": "Choose recipe",
 	"myinfo": "My info",
 	"infoModified": "Data modified successfully",
 	"dateOfBirth": "Date of birth (yyyy-MM-dd)",
@@ -30,5 +31,12 @@
 	"maintainWeight": "Maintain current weight",
 	"loseWeight": "Lose weight",
 	"gainWeight": "Gain weight",
-	"save": "Save"
+	"save": "Save",
+	"Breakfast": "Breakfast",
+	"Lunch": "Lunch",
+	"Dinner": "Dinner",
+	"Snack": "Snack",
+	"dateError": "Incorrect date",
+	"chooseFood": "Choose food",
+	"foodName": "Food name (optional)"
 }

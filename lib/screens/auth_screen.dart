@@ -116,7 +116,10 @@ class _AuthCardState extends State<AuthCard> {
           return;
         }
       } catch (e) {
-        print(e);
+        Fluttertoast.showToast(
+          msg: "An error occured",
+          backgroundColor: Color.fromARGB(210, 37, 37, 37),
+        );
         return;
       }
       Navigator.of(context).popAndPushNamed('/register_info');
@@ -153,7 +156,7 @@ class _AuthCardState extends State<AuthCard> {
           key: _formKey,
           child: SingleChildScrollView(
             child: Column(
-              children: <Widget>[
+              children: [
                 TextFormField(
                   decoration: InputDecoration(labelText: 'E-Mail'),
                   keyboardType: TextInputType.emailAddress,

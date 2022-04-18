@@ -1,3 +1,4 @@
+import 'package:fitness_app/screens/homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -11,6 +12,7 @@ class Myinfo extends StatefulWidget {
 }
 
 class _MyinfoState extends State<Myinfo> {
+  final _formKey = GlobalKey<FormState>();
   String activityLevel = '1.2';
   String goal = '+';
   String dob = '';
@@ -124,87 +126,107 @@ class _MyinfoState extends State<Myinfo> {
                     SizedBox(
                       height: 10,
                     ),
-                    TextFormField(
-                      decoration:
-                          InputDecoration(labelText: 'dateOfBirth'.tr()),
-                      controller: dobController,
-                      keyboardType: TextInputType.datetime,
-                      maxLength: 10,
-                      maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                    ),
-                    TextFormField(
-                      decoration: InputDecoration(labelText: 'height'.tr()),
-                      controller: heightController,
-                      keyboardType: TextInputType.numberWithOptions(),
-                    ),
-                    TextFormField(
-                      decoration: InputDecoration(labelText: 'weight'.tr()),
-                      controller: weightController,
-                      keyboardType:
-                          TextInputType.numberWithOptions(decimal: true),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: Text(
-                        'activityLevel'.tr(),
-                        style: TextStyle(fontSize: 16),
-                      ),
-                    ),
-                    DropdownButton(
-                        value: activityLevel,
-                        items: [
-                          DropdownMenuItem(
-                              child: Text('activ1'.tr()), value: '1.2'),
-                          DropdownMenuItem(
-                              child: Text('activ2'.tr()), value: '1.375'),
-                          DropdownMenuItem(
-                              child: Text('activ3'.tr()), value: '1.55'),
-                          DropdownMenuItem(
-                              child: Text('activ4'.tr()), value: '1.725'),
-                          DropdownMenuItem(
-                              child: Text('activ5'.tr()), value: '1.9')
+                    Form(
+                      key: _formKey,
+                      child: Column(
+                        children: [
+                          TextFormField(
+                              decoration: InputDecoration(
+                                  labelText: 'dateOfBirth'.tr()),
+                              controller: dobController,
+                              keyboardType: TextInputType.datetime,
+                              maxLength: 10,
+                              maxLengthEnforcement:
+                                  MaxLengthEnforcement.enforced,
+                              validator: (value) {
+                                if ((RegExp(r"^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])"))
+                                        .hasMatch(value!) ==
+                                    false) {
+                                  return 'dateError'.tr();
+                                }
+                              }),
+                          TextFormField(
+                            decoration:
+                                InputDecoration(labelText: 'height'.tr()),
+                            controller: heightController,
+                            keyboardType: TextInputType.numberWithOptions(),
+                          ),
+                          TextFormField(
+                            decoration:
+                                InputDecoration(labelText: 'weight'.tr()),
+                            controller: weightController,
+                            keyboardType:
+                                TextInputType.numberWithOptions(decimal: true),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 25),
+                            child: Text(
+                              'activityLevel'.tr(),
+                              style: TextStyle(fontSize: 16),
+                            ),
+                          ),
+                          DropdownButton(
+                              value: activityLevel,
+                              items: [
+                                DropdownMenuItem(
+                                    child: Text('activ1'.tr()), value: '1.2'),
+                                DropdownMenuItem(
+                                    child: Text('activ2'.tr()), value: '1.375'),
+                                DropdownMenuItem(
+                                    child: Text('activ3'.tr()), value: '1.55'),
+                                DropdownMenuItem(
+                                    child: Text('activ4'.tr()), value: '1.725'),
+                                DropdownMenuItem(
+                                    child: Text('activ5'.tr()), value: '1.9')
+                              ],
+                              onChanged: (String? newValue) {
+                                setState(() {
+                                  activityLevel = newValue!;
+                                });
+                              }),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 10),
+                            child: Text(
+                              'goal'.tr(),
+                              style: TextStyle(fontSize: 16),
+                            ),
+                          ),
+                          DropdownButton(
+                              value: goal,
+                              items: [
+                                DropdownMenuItem(
+                                    child: Text('maintainWeight'.tr()),
+                                    value: '='),
+                                DropdownMenuItem(
+                                    child: Text('loseWeight'.tr()), value: '-'),
+                                DropdownMenuItem(
+                                    child: Text('gainWeight'.tr()), value: '+'),
+                              ],
+                              onChanged: (String? newValue) {
+                                setState(() {
+                                  goal = newValue!;
+                                });
+                              }),
+                          Container(
+                            alignment: Alignment.center,
+                            padding: EdgeInsets.only(top: 30),
+                            child: ElevatedButton(
+                              onPressed: () {
+                                if (_formKey.currentState!.validate()) {
+                                  saveUserDetails(
+                                      dobController.text,
+                                      int.parse(heightController.text),
+                                      double.parse(weightController.text),
+                                      activityLevel,
+                                      goal);
+                                }
+                              },
+                              child: Text('save'.tr()),
+                            ),
+                          )
                         ],
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            activityLevel = newValue!;
-                          });
-                        }),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: Text(
-                        'goal'.tr(),
-                        style: TextStyle(fontSize: 16),
                       ),
                     ),
-                    DropdownButton(
-                        value: goal,
-                        items: [
-                          DropdownMenuItem(
-                              child: Text('maintainWeight'.tr()), value: '='),
-                          DropdownMenuItem(
-                              child: Text('loseWeight'.tr()), value: '-'),
-                          DropdownMenuItem(
-                              child: Text('gainWeight'.tr()), value: '+'),
-                        ],
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            goal = newValue!;
-                          });
-                        }),
-                    Container(
-                      padding: EdgeInsets.only(top: 35),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          saveUserDetails(
-                              dobController.text,
-                              int.parse(heightController.text),
-                              double.parse(weightController.text),
-                              activityLevel,
-                              goal);
-                        },
-                        child: Text('save'.tr()),
-                      ),
-                    )
                   ],
                 ),
               ]),
