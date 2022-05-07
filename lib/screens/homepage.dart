@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({Key? key}) : super(key: key);
@@ -20,23 +21,24 @@ class _HomepageState extends State<Homepage> {
   double currentProtein = 0;
   double currentCarbs = 0;
   double currentFat = 0;
-  bool isLoading = false;
+  bool _isLoading = false;
   double caloriesPercent = 0.0;
   double proteinPercent = 0.0;
   double carbsPercent = 0.0;
   double fatPercent = 0.0;
+  late String uid;
 
   @override
   void initState() {
+    uid = getUid();
     getUserDetailsAndMeals();
-    isLoading = true;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: isLoading
+      body: _isLoading
           ? Center(
               child: CircularProgressIndicator(),
             )
@@ -75,7 +77,7 @@ class _HomepageState extends State<Homepage> {
                           ),
                           CircularPercentIndicator(
                             backgroundColor: Color.fromARGB(40, 255, 255, 255),
-                            radius: 100.0,
+                            radius: 95.0,
                             lineWidth: 13.0,
                             animation: true,
                             percent: caloriesPercent,
@@ -91,8 +93,8 @@ class _HomepageState extends State<Homepage> {
                                 ),
                                 Divider(
                                   thickness: 4,
-                                  indent: 55,
-                                  endIndent: 55,
+                                  indent: 60,
+                                  endIndent: 60,
                                   color: Color.fromARGB(40, 255, 255, 255),
                                 ),
                                 Text(
@@ -132,7 +134,7 @@ class _HomepageState extends State<Homepage> {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               Container(
-                                width: 75,
+                                width: 80,
                                 child: Column(
                                   children: [
                                     Text(
@@ -141,11 +143,11 @@ class _HomepageState extends State<Homepage> {
                                       style: TextStyle(
                                           color: Colors.white, fontSize: 15),
                                     ),
-                                    SizedBox(height: 2),
+                                    SizedBox(height: 4),
                                     LinearPercentIndicator(
                                       alignment: MainAxisAlignment.center,
                                       width: 65.0,
-                                      lineHeight: 4.5,
+                                      lineHeight: 3,
                                       percent: proteinPercent,
                                       progressColor: Colors.white,
                                       backgroundColor:
@@ -153,7 +155,7 @@ class _HomepageState extends State<Homepage> {
                                       animation: true,
                                       barRadius: Radius.circular(8),
                                     ),
-                                    SizedBox(height: 2),
+                                    SizedBox(height: 4),
                                     Text(
                                       currentProtein.round().toString() +
                                           ' / ' +
@@ -176,11 +178,11 @@ class _HomepageState extends State<Homepage> {
                                       style: TextStyle(
                                           color: Colors.white, fontSize: 15),
                                     ),
-                                    SizedBox(height: 2),
+                                    SizedBox(height: 4),
                                     LinearPercentIndicator(
                                       alignment: MainAxisAlignment.center,
                                       width: 65.0,
-                                      lineHeight: 4.5,
+                                      lineHeight: 3,
                                       percent: carbsPercent,
                                       progressColor: Colors.white,
                                       backgroundColor:
@@ -188,7 +190,7 @@ class _HomepageState extends State<Homepage> {
                                       animation: true,
                                       barRadius: Radius.circular(8),
                                     ),
-                                    SizedBox(height: 2),
+                                    SizedBox(height: 4),
                                     Text(
                                       currentCarbs.round().toString() +
                                           ' / ' +
@@ -202,7 +204,7 @@ class _HomepageState extends State<Homepage> {
                                 ),
                               ),
                               Container(
-                                width: 75,
+                                width: 80,
                                 child: Column(
                                   children: [
                                     Text(
@@ -211,11 +213,11 @@ class _HomepageState extends State<Homepage> {
                                       style: TextStyle(
                                           color: Colors.white, fontSize: 15),
                                     ),
-                                    SizedBox(height: 2),
+                                    SizedBox(height: 4),
                                     LinearPercentIndicator(
                                       alignment: MainAxisAlignment.center,
                                       width: 65.0,
-                                      lineHeight: 4.5,
+                                      lineHeight: 3,
                                       percent: fatPercent,
                                       progressColor: Colors.white,
                                       backgroundColor:
@@ -223,7 +225,7 @@ class _HomepageState extends State<Homepage> {
                                       animation: true,
                                       barRadius: Radius.circular(8),
                                     ),
-                                    SizedBox(height: 2),
+                                    SizedBox(height: 4),
                                     Text(
                                       currentFat.round().toString() +
                                           ' / ' +
@@ -258,14 +260,13 @@ class _HomepageState extends State<Homepage> {
   }
 
   Future<void> getUserDetailsAndMeals() async {
+    _isLoading = true;
     String docId = DateTime.now().year.toString() +
         DateTime.now().month.toString() +
         DateTime.now().day.toString();
     try {
-      var result = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(FirebaseAuth.instance.currentUser!.uid)
-          .get();
+      var result =
+          await FirebaseFirestore.instance.collection('users').doc(uid).get();
       var data = result.data();
       setState(() {
         dailyCalorieIntake = data?['dailyCalorieIntake'];
@@ -276,7 +277,7 @@ class _HomepageState extends State<Homepage> {
 
       var coll = FirebaseFirestore.instance
           .collection('users')
-          .doc(FirebaseAuth.instance.currentUser?.uid)
+          .doc(uid)
           .collection('meals');
       var doc = await coll.doc(docId).get();
       if (doc.exists == false) {
@@ -284,7 +285,7 @@ class _HomepageState extends State<Homepage> {
       } else {
         var result2 = await FirebaseFirestore.instance
             .collection('users')
-            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .doc(uid)
             .collection('meals')
             .doc(docId)
             .get();
@@ -314,8 +315,17 @@ class _HomepageState extends State<Homepage> {
       }
     } catch (e) {
       print('ERROR: ' + e.toString());
+      Fluttertoast.showToast(
+          msg: 'error'.tr(), backgroundColor: Color.fromARGB(255, 95, 95, 95));
       return;
     }
-    isLoading = false;
+    _isLoading = false;
+  }
+
+  String getUid() {
+    _isLoading = true;
+    String result = FirebaseAuth.instance.currentUser!.uid;
+    _isLoading = false;
+    return result;
   }
 }

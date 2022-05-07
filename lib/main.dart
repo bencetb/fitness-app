@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'dart:io';
 
 import 'screens/add_meal.dart';
 import 'screens/homepage.dart';
@@ -21,7 +22,8 @@ void main() async {
     EasyLocalization(
         child: const MyApp(),
         supportedLocales: const [Locale('en'), Locale('hu')],
-        fallbackLocale: const Locale('hu'),
+        fallbackLocale:
+            Platform.localeName == 'hu_HU' ? Locale('hu') : Locale('en'),
         path: "assets/translations"),
   );
 }

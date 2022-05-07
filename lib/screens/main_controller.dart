@@ -61,7 +61,7 @@ class _MainControllerState extends State<MainController> {
                     style: (EasyLocalization.of(context)?.locale.toString() ==
                             "hu")
                         ? const TextStyle(
-                            fontSize: 19, fontWeight: FontWeight.w500)
+                            fontSize: 20, fontWeight: FontWeight.w500)
                         : const TextStyle(
                             fontSize: 18, fontWeight: FontWeight.w400),
                   ),
@@ -75,7 +75,7 @@ class _MainControllerState extends State<MainController> {
                     style: (EasyLocalization.of(context)?.locale.toString() ==
                             "en")
                         ? const TextStyle(
-                            fontSize: 19, fontWeight: FontWeight.w500)
+                            fontSize: 20, fontWeight: FontWeight.w500)
                         : const TextStyle(
                             fontSize: 18, fontWeight: FontWeight.w400),
                   ),

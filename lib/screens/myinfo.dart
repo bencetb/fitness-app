@@ -1,4 +1,3 @@
-import 'package:fitness_app/screens/homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -25,83 +24,6 @@ class _MyinfoState extends State<Myinfo> {
   late TextEditingController dobController;
 
   bool isLoading = true;
-
-  Future<void> getUserDetails() async {
-    final result = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .get();
-    var data = result.data();
-    setState(() {
-      activityLevel = data?['activityLevel'];
-      goal = data?['goal'];
-      dob = data?['dateOfBirth'];
-      height = data?['height'] as int;
-      weight = data?['weight'] as double;
-      gender = data?['gender'];
-      heightController = TextEditingController(text: height.toString());
-      weightController = TextEditingController(text: weight.toString());
-      dobController = TextEditingController(text: dob);
-    });
-    isLoading = false;
-  }
-
-  Future<void> saveUserDetails(String dob, int height, double weight,
-      String activityLevel, String goal) async {
-    int age = calculateAge(dob);
-    int g = gender == 'male' ? 5 : -161;
-    double gm = gender == 'male' ? 0.85 : 0.9;
-    int dailyCalorieIntake = 0;
-    int protein = 0;
-    int carbs = 0;
-    int fat = 0;
-    if (goal == '-') {
-      dailyCalorieIntake = (((10 * weight + 6.25 * height - 5 * age + g) *
-                  double.parse(activityLevel)) *
-              gm)
-          .round();
-      protein = ((dailyCalorieIntake * 0.4) / 4).round();
-      carbs = ((dailyCalorieIntake * 0.4) / 4).round();
-      fat = ((dailyCalorieIntake * 0.2) / 9).round();
-    } else if (goal == '+') {
-      dailyCalorieIntake = (((10 * weight + 6.25 * height - 5 * age + g) *
-                  double.parse(activityLevel)) +
-              500)
-          .round();
-      protein = ((dailyCalorieIntake * 0.3) / 4).round();
-      carbs = ((dailyCalorieIntake * 0.4) / 4).round();
-      fat = ((dailyCalorieIntake * 0.3) / 9).round();
-    } else {
-      dailyCalorieIntake = ((10 * weight + 6.25 * height - 5 * age + g) *
-              double.parse(activityLevel))
-          .round();
-      protein = ((dailyCalorieIntake * 0.3) / 4).round();
-      carbs = ((dailyCalorieIntake * 0.4) / 4).round();
-      fat = ((dailyCalorieIntake * 0.3) / 9).round();
-    }
-    try {
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(FirebaseAuth.instance.currentUser?.uid)
-          .update({
-        'height': height,
-        'weight': weight,
-        'dateOfBirth': dob,
-        'age': age,
-        'activityLevel': activityLevel,
-        'goal': goal,
-        'dailyCalorieIntake': dailyCalorieIntake,
-        'protein': protein,
-        'carbs': carbs,
-        'fat': fat
-      });
-    } catch (e) {
-      return;
-    }
-    Fluttertoast.showToast(
-        msg: 'infoModified'.tr(),
-        backgroundColor: Color.fromARGB(255, 95, 95, 95));
-  }
 
   @override
   void initState() {
@@ -131,29 +53,50 @@ class _MyinfoState extends State<Myinfo> {
                       child: Column(
                         children: [
                           TextFormField(
-                              decoration: InputDecoration(
-                                  labelText: 'dateOfBirth'.tr()),
-                              controller: dobController,
-                              keyboardType: TextInputType.datetime,
-                              maxLength: 10,
-                              maxLengthEnforcement:
-                                  MaxLengthEnforcement.enforced,
-                              validator: (value) {
-                                if ((RegExp(r"^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])"))
-                                        .hasMatch(value!) ==
-                                    false) {
-                                  return 'dateError'.tr();
-                                }
-                              }),
+                            readOnly: true,
+                            decoration: InputDecoration(
+                                labelText: 'dateOfBirth'.tr(),
+                                border: OutlineInputBorder()),
+                            controller: dobController,
+                            keyboardType: TextInputType.datetime,
+                            onTap: () async {
+                              final DateTime? pickedDate = await showDatePicker(
+                                  locale: (EasyLocalization.of(context)
+                                              ?.locale
+                                              .toString() ==
+                                          "hu")
+                                      ? Locale('hu')
+                                      : Locale('en'),
+                                  context: context,
+                                  initialDate: DateFormat("yyyy-MM-dd")
+                                      .parse(dobController.text),
+                                  firstDate: DateTime(1900),
+                                  lastDate: DateTime(2010));
+                              if (pickedDate != null) {
+                                setState(() {
+                                  dobController.text = DateFormat("yyyy-MM-dd")
+                                      .format(pickedDate);
+                                });
+                              }
+                            },
+                          ),
+                          SizedBox(
+                            height: 12,
+                          ),
                           TextFormField(
-                            decoration:
-                                InputDecoration(labelText: 'height'.tr()),
+                            decoration: InputDecoration(
+                                labelText: 'height'.tr(),
+                                border: OutlineInputBorder()),
                             controller: heightController,
                             keyboardType: TextInputType.numberWithOptions(),
                           ),
+                          SizedBox(
+                            height: 12,
+                          ),
                           TextFormField(
-                            decoration:
-                                InputDecoration(labelText: 'weight'.tr()),
+                            decoration: InputDecoration(
+                                labelText: 'weight'.tr(),
+                                border: OutlineInputBorder()),
                             controller: weightController,
                             keyboardType:
                                 TextInputType.numberWithOptions(decimal: true),
@@ -245,5 +188,82 @@ class _MyinfoState extends State<Myinfo> {
       if (int.parse(dob.substring(8, 10)) > currentDate.day) age--;
     }
     return age;
+  }
+
+  Future<void> getUserDetails() async {
+    final result = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get();
+    var data = result.data();
+    setState(() {
+      activityLevel = data?['activityLevel'];
+      goal = data?['goal'];
+      dob = data?['dateOfBirth'];
+      height = data?['height'] as int;
+      weight = data?['weight'] as double;
+      gender = data?['gender'];
+      heightController = TextEditingController(text: height.toString());
+      weightController = TextEditingController(text: weight.toString());
+      dobController = TextEditingController(text: dob);
+    });
+    isLoading = false;
+  }
+
+  Future<void> saveUserDetails(String dob, int height, double weight,
+      String activityLevel, String goal) async {
+    int age = calculateAge(dob);
+    int g = gender == 'male' ? 5 : -161;
+    double gm = gender == 'male' ? 0.85 : 0.9;
+    int dailyCalorieIntake = 0;
+    int protein = 0;
+    int carbs = 0;
+    int fat = 0;
+    if (goal == '-') {
+      dailyCalorieIntake = (((10 * weight + 6.25 * height - 5 * age + g) *
+                  double.parse(activityLevel)) *
+              gm)
+          .round();
+      protein = ((dailyCalorieIntake * 0.4) / 4).round();
+      carbs = ((dailyCalorieIntake * 0.4) / 4).round();
+      fat = ((dailyCalorieIntake * 0.2) / 9).round();
+    } else if (goal == '+') {
+      dailyCalorieIntake = (((10 * weight + 6.25 * height - 5 * age + g) *
+                  double.parse(activityLevel)) +
+              500)
+          .round();
+      protein = ((dailyCalorieIntake * 0.3) / 4).round();
+      carbs = ((dailyCalorieIntake * 0.4) / 4).round();
+      fat = ((dailyCalorieIntake * 0.3) / 9).round();
+    } else {
+      dailyCalorieIntake = ((10 * weight + 6.25 * height - 5 * age + g) *
+              double.parse(activityLevel))
+          .round();
+      protein = ((dailyCalorieIntake * 0.3) / 4).round();
+      carbs = ((dailyCalorieIntake * 0.4) / 4).round();
+      fat = ((dailyCalorieIntake * 0.3) / 9).round();
+    }
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser?.uid)
+          .update({
+        'height': height,
+        'weight': weight,
+        'dateOfBirth': dob,
+        'age': age,
+        'activityLevel': activityLevel,
+        'goal': goal,
+        'dailyCalorieIntake': dailyCalorieIntake,
+        'protein': protein,
+        'carbs': carbs,
+        'fat': fat
+      });
+    } catch (e) {
+      return;
+    }
+    Fluttertoast.showToast(
+        msg: 'infoModified'.tr(),
+        backgroundColor: Color.fromARGB(255, 95, 95, 95));
   }
 }

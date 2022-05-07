@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../models/meal.dart';
 
@@ -22,6 +23,8 @@ class _DiaryState extends State<Diary> {
   dynamic fat = 0.0;
   String foodName = '';
   int days = 0;
+  DateTime currentDate = DateTime.now();
+  String firstDate = '';
 
   @override
   void initState() {
@@ -48,29 +51,53 @@ class _DiaryState extends State<Diary> {
                       icon: const Icon(Icons.arrow_back),
                       onPressed: () {
                         setState(() {
+                          currentDate = currentDate.subtract(Duration(days: 1));
                           offset--;
                           days--;
                         });
                         getMeals();
-                        _isLoading = true;
                       },
                     ),
               SizedBox(
                 width: 15,
               ),
-              (EasyLocalization.of(context)?.locale.toString() == "hu")
-                  ? Text(
-                      DateFormat.yMMMEd('hu')
-                          .format(DateTime.now().add(Duration(days: offset))),
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 16),
-                    )
-                  : Text(
-                      DateFormat.yMMMEd()
-                          .format(DateTime.now().add(Duration(days: offset))),
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 16),
-                    ),
+              TextButton(
+                child: Text(
+                  (EasyLocalization.of(context)?.locale.toString() == "hu")
+                      ? DateFormat.yMMMEd('hu').format(currentDate)
+                      : DateFormat.yMMMEd().format(currentDate),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 16, color: Colors.black),
+                ),
+                onPressed: () async {
+                  final DateTime? pickedDate = await showDatePicker(
+                      locale:
+                          (EasyLocalization.of(context)?.locale.toString() ==
+                                  "hu")
+                              ? Locale('hu')
+                              : Locale('en'),
+                      context: context,
+                      initialDate: currentDate,
+                      firstDate: DateTime(2022, 4, 1),
+                      lastDate: DateTime.now());
+                  if (pickedDate != null) {
+                    if (int.parse((pickedDate.year.toString() +
+                            pickedDate.month.toString() +
+                            pickedDate.day.toString())) <
+                        int.parse(firstDate)) {
+                      Fluttertoast.showToast(
+                          msg: 'error'.tr(),
+                          backgroundColor: Color.fromARGB(255, 95, 95, 95));
+                      return;
+                    }
+                    days += daysBetween(currentDate, pickedDate);
+                    setState(() {
+                      currentDate = pickedDate;
+                    });
+                    getMeals();
+                  }
+                },
+              ),
               SizedBox(
                 width: 15,
               ),
@@ -82,16 +109,18 @@ class _DiaryState extends State<Diary> {
                   : IconButton(
                       icon: const Icon(Icons.arrow_forward),
                       onPressed: () {
-                        if (DateTime.now().isBefore(
-                            DateTime.now().add(Duration(days: offset)))) {
+                        if (currentDate
+                            .add(Duration(days: 1))
+                            .isAfter(DateTime.now())) {
                           return;
+                        } else {
+                          setState(() {
+                            currentDate = currentDate.add(Duration(days: 1));
+                            offset++;
+                            days++;
+                          });
+                          getMeals();
                         }
-                        setState(() {
-                          offset++;
-                          days++;
-                        });
-                        getMeals();
-                        _isLoading = true;
                       },
                     ),
             ],
@@ -199,17 +228,63 @@ class _DiaryState extends State<Diary> {
                           padding: const EdgeInsets.all(10),
                           child: Column(
                             children: [
-                              Text(
-                                meals[index].foodName.isNotEmpty
-                                    ? meals[index].mealType.tr().toUpperCase() +
-                                        ' - ' +
-                                        meals[index].foodName.toUpperCase()
-                                    : meals[index].mealType.tr().toUpperCase(),
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.bold),
-                                textAlign: TextAlign.center,
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    meals[index].foodName.isNotEmpty
+                                        ? meals[index]
+                                                .mealType
+                                                .tr()
+                                                .toUpperCase() +
+                                            ' - ' +
+                                            meals[index].foodName.toUpperCase()
+                                        : meals[index]
+                                            .mealType
+                                            .tr()
+                                            .toUpperCase(),
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.bold),
+                                    textAlign: TextAlign.center,
+                                  ),
+
+                                  /*IconButton(
+                                    padding: EdgeInsets.all(0),
+                                    icon: Icon(
+                                      Icons.delete_forever,
+                                      color: Colors.white,
+                                    ),
+                                    onPressed: () {
+                                      showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) =>
+                                              AlertDialog(
+                                                title: Text(
+                                                  'deleteMeal'.tr(),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                                actions: [
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: Text('cancel'.tr()),
+                                                  ),
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      deleteMeal(meals[index]);
+                                                      Navigator.pop(
+                                                          context, 'OK');
+                                                    },
+                                                    child: const Text('OK'),
+                                                  ),
+                                                ],
+                                              ));
+                                    },
+                                  ),*/
+                                ],
                               ),
                               SizedBox(
                                 height: 8,
@@ -229,7 +304,9 @@ class _DiaryState extends State<Diary> {
                                             'kcal',
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
-                                            color: Colors.white, fontSize: 15),
+                                          color: Colors.white,
+                                          fontSize: 15,
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -286,25 +363,23 @@ class _DiaryState extends State<Diary> {
   }
 
   Future<void> getDays() async {
-    try {
-      var coll = FirebaseFirestore.instance
-          .collection('users')
-          .doc(FirebaseAuth.instance.currentUser?.uid)
-          .collection('meals');
+    _isLoading = true;
+    var coll = FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .collection('meals');
 
-      await coll.get().then((value) {
-        days = value.docs.length;
-      });
-    } catch (e) {
-      print('ERROR: ' + e.toString());
-      return;
-    }
+    await coll.get().then((value) {
+      days = value.docs.length;
+    });
+    _isLoading = false;
   }
 
   Future<void> getMeals() async {
-    docId = DateTime.now().add(Duration(days: offset)).year.toString() +
-        DateTime.now().add(Duration(days: offset)).month.toString() +
-        DateTime.now().add(Duration(days: offset)).day.toString();
+    _isLoading = true;
+    docId = currentDate.year.toString() +
+        currentDate.month.toString() +
+        currentDate.day.toString();
     meals = [];
     calories = 0.0;
     protein = 0.0;
@@ -319,6 +394,24 @@ class _DiaryState extends State<Diary> {
           .doc(docId)
           .get();
 
+      var asd = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .collection('meals')
+          .get();
+
+      firstDate = asd.docs.elementAt(0).id;
+
+      if (result.exists == false) {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .collection('meals')
+            .doc(docId)
+            .set({});
+        days++;
+      }
+
       var data = result.data();
       int mealCount = data?.length as int;
       setState(() {
@@ -326,6 +419,7 @@ class _DiaryState extends State<Diary> {
           if (data?.values.elementAt(i)['mealType'] != null) {
             mealType = data?.values.elementAt(i)['mealType'];
           }
+
           meals.add(Meal(
             mealType,
             data?.values.elementAt(i)['protein'],
@@ -333,6 +427,7 @@ class _DiaryState extends State<Diary> {
             data?.values.elementAt(i)['fat'],
             data?.values.elementAt(i)['foodName'],
           ));
+
           protein += data?.values.elementAt(i)['protein'];
           fat += data?.values.elementAt(i)['fat'];
           carbs += data?.values.elementAt(i)['carbs'];
@@ -341,8 +436,46 @@ class _DiaryState extends State<Diary> {
       });
     } catch (e) {
       print('ERROR: ' + e.toString());
+      Fluttertoast.showToast(
+          msg: 'error'.tr(), backgroundColor: Color.fromARGB(255, 95, 95, 95));
       return;
     }
     _isLoading = false;
   }
+
+  int daysBetween(DateTime from, DateTime to) {
+    from = DateTime(from.year, from.month, from.day);
+    to = DateTime(to.year, to.month, to.day);
+    return (to.difference(from).inHours / 24).round();
+  }
+
+  /*Future<void> deleteMeal(Meal meal) async {
+    _isLoading = true;
+    docId = currentDate.year.toString() +
+        currentDate.month.toString() +
+        currentDate.day.toString();
+    try {
+      var result = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .collection('meals')
+          .doc(docId)
+          .get();
+
+      var data = result.data();
+
+      var nemtom = data!.values.where()
+      print(data.values);
+    } catch (e) {
+      print('ERROR: ' + e.toString());
+      Fluttertoast.showToast(
+          msg: 'error'.tr(), backgroundColor: Color.fromARGB(255, 95, 95, 95));
+      return;
+    }
+    Fluttertoast.showToast(
+        msg: 'mealDeleted'.tr(),
+        backgroundColor: Color.fromARGB(255, 95, 95, 95));
+    getMeals();
+    _isLoading = false;
+  }*/
 }

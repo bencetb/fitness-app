@@ -1,11 +1,13 @@
+import 'ingredient.dart';
+
 class Recipe {
   late String name;
-  late int protein;
-  late int carbs;
-  late int fat;
+  late dynamic protein;
+  late dynamic carbs;
+  late dynamic fat;
   late int calories;
+  late List<Ingredient> ingredients;
 
-  Recipe(this.name, this.protein, this.carbs, this.fat) {
-    calories = protein * 4 + carbs * 4 + fat * 9;
-  }
+  Recipe(this.name, this.protein, this.carbs, this.fat, this.calories,
+      this.ingredients);
 }

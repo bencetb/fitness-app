@@ -1,9 +1,12 @@
-import 'package:fitness_app/models/recipe.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:uuid/uuid.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+
+import '../models/recipe.dart';
+import '../models/ingredient.dart';
 
 class AddMeal extends StatefulWidget {
   @override
@@ -11,6 +14,7 @@ class AddMeal extends StatefulWidget {
 }
 
 class _State extends State<AddMeal> {
+  final _formKey = GlobalKey<FormState>();
   final proteinController = TextEditingController();
   final carbsController = TextEditingController();
   final fatController = TextEditingController();
@@ -18,6 +22,7 @@ class _State extends State<AddMeal> {
   final foodNameController = TextEditingController();
   final recipeScrollController = ScrollController();
   final searchScrollController = ScrollController();
+  final amountController = TextEditingController();
   double protein = 0.0;
   double carbs = 0.0;
   double fat = 0.0;
@@ -58,7 +63,7 @@ class _State extends State<AddMeal> {
                           _isLoading
                               ? Center(child: CircularProgressIndicator())
                               : Container(
-                                  height: height - 500,
+                                  height: height - 400,
                                   width: double.maxFinite,
                                   padding: const EdgeInsets.all(8.0),
                                   child: Scrollbar(
@@ -81,6 +86,8 @@ class _State extends State<AddMeal> {
                                                       .toString(),
                                               fatController.text =
                                                   recipes[index].fat.toString(),
+                                              foodNameController.text =
+                                                  recipes[index].name,
                                               Navigator.pop(context)
                                             },
                                           );
@@ -92,72 +99,128 @@ class _State extends State<AddMeal> {
             },
           ),
           IconButton(
-              onPressed: () {
-                setState(() {
-                  foodName = searchController.text.toLowerCase().trim();
-                });
-                showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: Center(child: Text('chooseFood'.tr())),
-                        contentPadding: EdgeInsets.only(top: 10),
-                        content: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Container(
-                              height: height - 430,
-                              width: double.maxFinite,
-                              child: StreamBuilder<QuerySnapshot>(
-                                stream: FirebaseFirestore.instance
-                                    .collection('foods')
-                                    .where("nameSearchField",
-                                        arrayContains: foodName)
-                                    .snapshots(),
-                                builder: (BuildContext context,
-                                    AsyncSnapshot<QuerySnapshot> snapshot) {
-                                  switch (snapshot.connectionState) {
-                                    case ConnectionState.waiting:
-                                      return Center(
-                                        child: CircularProgressIndicator(),
-                                      );
-                                    default:
-                                      return Scrollbar(
-                                        controller: searchScrollController,
-                                        isAlwaysShown: true,
-                                        child: ListView(
-                                          controller: searchScrollController,
-                                          children: snapshot.data!.docs
-                                              .map((DocumentSnapshot document) {
-                                            return ListTile(
-                                              title: Text(
-                                                document['foodName'],
-                                              ),
-                                              onTap: () {
-                                                protein += document['protein'];
-                                                carbs += document['carbs'];
-                                                fat += document['fat'];
-                                                proteinController.text =
-                                                    protein.toString();
-                                                carbsController.text =
-                                                    carbs.toString();
-                                                fatController.text =
-                                                    fat.toString();
-                                              },
+            icon: Icon(Icons.search),
+            onPressed: () {
+              setState(() {
+                foodName = searchController.text.toLowerCase().trim();
+                amountController.text = '';
+                if (proteinController.text.isEmpty) protein = 0;
+                if (carbsController.text.isEmpty) carbs = 0;
+                if (fatController.text.isEmpty) fat = 0;
+              });
+              searchController.text.isEmpty
+                  ? Fluttertoast.showToast(
+                      msg: 'searchEmpty'.tr(),
+                      backgroundColor: Color.fromARGB(255, 95, 95, 95))
+                  : showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          contentPadding: EdgeInsets.all(0),
+                          content: Form(
+                            key: _formKey,
+                            child: SingleChildScrollView(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 15, right: 15),
+                                    child: TextFormField(
+                                        keyboardType:
+                                            TextInputType.numberWithOptions(),
+                                        controller: amountController,
+                                        decoration: InputDecoration(
+                                            labelText: 'amount'.tr()),
+                                        validator: (value) {
+                                          if (value!.isEmpty) {
+                                            return 'enterAmount'.tr();
+                                          }
+                                        }),
+                                  ),
+                                  Container(
+                                    height: height - 350,
+                                    width: double.maxFinite,
+                                    child: StreamBuilder<QuerySnapshot>(
+                                      stream: FirebaseFirestore.instance
+                                          .collection('foods')
+                                          .where("nameSearchField",
+                                              arrayContains: foodName)
+                                          .snapshots(),
+                                      builder: (BuildContext context,
+                                          AsyncSnapshot<QuerySnapshot>
+                                              snapshot) {
+                                        switch (snapshot.connectionState) {
+                                          case ConnectionState.waiting:
+                                            return Center(
+                                              child:
+                                                  CircularProgressIndicator(),
                                             );
-                                          }).toList(),
-                                        ),
-                                      );
-                                  }
-                                },
+                                          default:
+                                            return Scrollbar(
+                                              controller:
+                                                  searchScrollController,
+                                              isAlwaysShown: true,
+                                              child: ListView(
+                                                controller:
+                                                    searchScrollController,
+                                                children: snapshot.data!.docs
+                                                    .map((DocumentSnapshot
+                                                        document) {
+                                                  return ListTile(
+                                                    title: Text(
+                                                      document['foodName'],
+                                                    ),
+                                                    onTap: () {
+                                                      if (_formKey.currentState!
+                                                          .validate()) {
+                                                        protein += document[
+                                                                'protein'] *
+                                                            int.parse(
+                                                                amountController
+                                                                    .text) *
+                                                            0.01;
+                                                        carbs += document[
+                                                                'carbs'] *
+                                                            int.parse(
+                                                                amountController
+                                                                    .text) *
+                                                            0.01;
+                                                        fat += document['fat'] *
+                                                            int.parse(
+                                                                amountController
+                                                                    .text) *
+                                                            0.01;
+                                                        proteinController.text =
+                                                            protein
+                                                                .toStringAsFixed(
+                                                                    2);
+                                                        carbsController.text =
+                                                            carbs
+                                                                .toStringAsFixed(
+                                                                    2);
+                                                        fatController.text = fat
+                                                            .toStringAsFixed(2);
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      }
+                                                    },
+                                                  );
+                                                }).toList(),
+                                              ),
+                                            );
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                          ],
-                        ),
-                      );
-                    });
-              },
-              icon: Icon(Icons.search))
+                          ),
+                        );
+                      });
+            },
+          )
         ],
       ),
       body: ListView(
@@ -260,37 +323,76 @@ class _State extends State<AddMeal> {
       }
     } catch (e) {
       print('ERROR: ' + e.toString());
+      Fluttertoast.showToast(
+          msg: 'error'.tr(), backgroundColor: Color.fromARGB(255, 95, 95, 95));
       return;
     }
   }
 
   Future<void> getRecipes() async {
-    //_isLoading = true;
+    _isLoading = true;
     recipes = [];
-    try {
-      var result = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(FirebaseAuth.instance.currentUser!.uid)
-          .collection('recipes')
-          .doc('recipes')
-          .get();
+    List<Ingredient> ings = [];
+    int numOfRecipes;
 
-      var data = result.data();
-      int recipeCount = data?.length as int;
-      setState(() {
-        for (int i = 0; i < recipeCount; i++) {
-          recipes.add(Recipe(
-            data?.values.elementAt(i)['name'] as String,
-            data?.values.elementAt(i)['protein'],
-            data?.values.elementAt(i)['carbs'],
-            data?.values.elementAt(i)['fat'],
-          ));
+    var result = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('recipes')
+        .get()
+        .then((value) {
+      numOfRecipes = value.docs.length;
+
+      for (int i = 0; i < numOfRecipes; i++) {
+        int ingredientCount = value.docs.elementAt(i).data().length;
+
+        for (int j = 0; j < ingredientCount; j++) {
+          String key = value.docs.elementAt(i).data().entries.elementAt(j).key;
+          if (key != 'carbs' &&
+              key != 'protein' &&
+              key != 'fat' &&
+              key != 'calories') {
+            ings.add(Ingredient(
+                value.docs.elementAt(i).data().entries.elementAt(j).key,
+                value.docs
+                    .elementAt(i)
+                    .data()
+                    .entries
+                    .elementAt(j)
+                    .value['amount'],
+                value.docs
+                    .elementAt(i)
+                    .data()
+                    .entries
+                    .elementAt(j)
+                    .value['protein'],
+                value.docs
+                    .elementAt(i)
+                    .data()
+                    .entries
+                    .elementAt(j)
+                    .value['carbs'],
+                value.docs
+                    .elementAt(i)
+                    .data()
+                    .entries
+                    .elementAt(j)
+                    .value['fat']));
+          }
         }
-      });
-    } catch (e) {
-      print('ERROR: ' + e.toString());
-      return;
-    }
-    _isLoading = false;
+        recipes.add(Recipe(
+            value.docs.elementAt(i).id,
+            value.docs.elementAt(i).data()['protein'],
+            value.docs.elementAt(i).data()['carbs'],
+            value.docs.elementAt(i).data()['fat'],
+            value.docs.elementAt(i).data()['calories'],
+            ings));
+        ings = [];
+      }
+    });
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 }
