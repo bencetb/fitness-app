@@ -138,12 +138,7 @@ class _MainControllerState extends State<MainController> {
   }
 
   Future<void> logOut() async {
-    try {
-      await FirebaseAuth.instance.signOut();
-    } on FirebaseAuthException catch (e) {
-      print('Log out error');
-      return;
-    }
+    await FirebaseAuth.instance.signOut();
     Navigator.of(context).pushReplacementNamed('/auth_screen');
   }
 }

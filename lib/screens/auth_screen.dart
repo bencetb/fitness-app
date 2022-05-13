@@ -178,7 +178,7 @@ class _AuthCardState extends State<AuthCard> {
                   },
                 ),
                 TextFormField(
-                  decoration: InputDecoration(labelText: 'Jelszó'),
+                  decoration: InputDecoration(labelText: 'password'.tr()),
                   obscureText: true,
                   controller: _passwordController,
                   validator: (value) {
