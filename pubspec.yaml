@@ -26,10 +26,10 @@ environment:
 # dependencies can be manually updated by changing the version numbers below to
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
+
 dependencies:
   flutter:
     sdk: flutter
-  searchfield: ^0.5.6
   cupertino_icons: ^1.0.2
   cloud_firestore: ^3.1.11
   firebase_core: ^1.14.0

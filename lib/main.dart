@@ -11,7 +11,7 @@ import 'screens/recipes.dart';
 import 'screens/myinfo.dart';
 import 'screens/auth_screen.dart';
 import 'screens/register_info.dart';
-import 'screens/main_controller.dart';
+import 'widgets/main_controller.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

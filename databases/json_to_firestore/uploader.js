@@ -12,10 +12,7 @@ const path = require("path");
 const fs = require("fs");
 const directoryPath = path.join(__dirname, "files");
 
-fs.readdir(directoryPath, function(err, files) {
-  if (err) {
-    return console.log("Unable to scan directory: " + err);
-  }
+fs.readdir(directoryPath, function(files) {
 
   files.forEach(function(file) {
     var lastDotIndex = file.lastIndexOf(".");
@@ -30,9 +27,6 @@ fs.readdir(directoryPath, function(err, files) {
         .then(function(docRef) {
           console.log("Document written");
         })
-        .catch(function(error) {
-          console.error("Error adding document: ", error);
-        });
     });
   });
 });
